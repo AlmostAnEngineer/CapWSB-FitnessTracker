@@ -31,12 +31,8 @@ class UserController {
 
     @PostMapping
     public User addUser(@RequestBody UserDto userDto) {
-
-        // Demonstracja how to use @RequestBody
         System.out.println("User with e-mail: " + userDto.email() + "passed to the request");
-
-        // TODO: saveUser with Service and return User
-        return null;
+        return userService.createUser(userMapper.toEntity(userDto));
     }
 
 }

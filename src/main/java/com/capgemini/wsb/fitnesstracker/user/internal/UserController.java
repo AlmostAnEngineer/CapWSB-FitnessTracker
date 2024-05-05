@@ -2,7 +2,9 @@ package com.capgemini.wsb.fitnesstracker.user.internal;
 
 import com.capgemini.wsb.fitnesstracker.user.api.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +28,20 @@ class UserController {
 
     @GetMapping("/{id}")
     public Optional<UserDto> getAllUsers(@PathVariable Long id) {
-        return userService.findUserById(id).map(userMapper::toDto);
+        Optional<User> user = Optional.ofNullable(userService.findUserById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND)));
+        return user.map(userMapper::toDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public Optional<UserDto> removeUser(@PathVariable Long id) {
+        Optional<User> user =  userService.findUserById(id);
+        if(user.isPresent())
+        {
+            userService.removeUser(user.get());
+            return user.map(userMapper::toDto);
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping

@@ -27,6 +27,12 @@ class UserServiceImpl implements UserService, UserProvider {
     }
 
     @Override
+    public User patchUser(final User user) {
+        log.info("Patching User {}", user);
+        return userRepository.save(user);
+    }
+
+    @Override
     public void removeUser(final User user)
     {
         log.info("Removing User {}", user.getId());

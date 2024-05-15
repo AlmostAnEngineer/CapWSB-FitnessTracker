@@ -50,4 +50,10 @@ class UserController {
         return userService.createUser(userMapper.toEntity(userDto));
     }
 
+    @PostMapping("/{id}")
+    public User patchUser(@PathVariable Long id, @RequestBody UserDto userDto) {
+        userService.getUser(id).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return userService.patchUser(userMapper.toEntity(userDto, id));
+    }
+
 }

@@ -52,5 +52,20 @@ public class User {
         this.trainings = new ArrayList<>();
     }
 
+    public User(
+            final Long id,
+            final String firstName,
+            final String lastName,
+            final LocalDate birthdate,
+            final String email) {
+
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthdate = birthdate;
+        this.email = email;
+        this.trainings = new ArrayList<>();
+    }
+
 }
 

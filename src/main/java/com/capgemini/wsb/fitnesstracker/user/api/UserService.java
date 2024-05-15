@@ -9,6 +9,7 @@ import java.util.Optional;
 public interface UserService {
 
     User createUser(User user);
+    User patchUser(User user);
     void removeUser(User user);
 
 }

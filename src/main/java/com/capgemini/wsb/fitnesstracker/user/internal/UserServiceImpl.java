@@ -29,7 +29,12 @@ class UserServiceImpl implements UserService, UserProvider {
     @Override
     public User patchUser(final User user) {
         log.info("Patching User {}", user);
-        return userRepository.save(user);
+        User actualUser = userRepository.findById(user.getId()).get();
+        actualUser.setFirstName(user.getFirstName());
+        actualUser.setLastName(user.getLastName());
+        actualUser.setEmail(user.getEmail());
+        userRepository.save(actualUser);
+        return user;
     }
 
     @Override

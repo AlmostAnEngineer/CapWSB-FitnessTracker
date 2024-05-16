@@ -3,10 +3,7 @@ package com.capgemini.wsb.fitnesstracker.user.api;
 import com.capgemini.wsb.fitnesstracker.training.api.Training;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -24,18 +21,28 @@ public class User {
     @Nullable
     private Long id;
 
+    @Setter
+    @Getter
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
+    @Setter
+    @Getter
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
+    @Setter
+    @Getter
     @Column(name = "birthdate", nullable = false)
     private LocalDate birthdate;
 
+    @Getter
+    @Setter
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Setter
+    @Getter
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Training> trainings;
 
@@ -53,7 +60,7 @@ public class User {
     }
 
     public User(
-            final Long id,
+            @Nullable final Long id,
             final String firstName,
             final String lastName,
             final LocalDate birthdate,
@@ -65,6 +72,11 @@ public class User {
         this.birthdate = birthdate;
         this.email = email;
         this.trainings = new ArrayList<>();
+    }
+
+    @Nullable
+    public Long getId() {
+        return id;
     }
 
 }

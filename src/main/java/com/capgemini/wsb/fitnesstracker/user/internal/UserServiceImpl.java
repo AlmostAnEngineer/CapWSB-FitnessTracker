@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,6 +68,16 @@ class UserServiceImpl implements UserService, UserProvider {
     @Override
     public Optional<User> findUserById(Long userId) {
         return userRepository.findById(userId);
+    }
+
+    @Override
+    public Optional<User> findUserByEmail(String email){
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public Collection<User> findUserOlderThan(Integer age) {
+        return userRepository.findOlderThan(age);
     }
 
 }

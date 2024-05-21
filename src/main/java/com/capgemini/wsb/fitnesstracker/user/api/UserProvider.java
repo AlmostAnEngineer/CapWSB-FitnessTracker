@@ -1,5 +1,6 @@
 package com.capgemini.wsb.fitnesstracker.user.api;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,5 +31,7 @@ public interface UserProvider {
      */
     List<User> findAllUsers();
     Optional<User> findUserById(Long userId);
+    Optional<User> findUserByEmail(String email);
+    Collection<User> findUserOlderThan(Integer age);
 
 }

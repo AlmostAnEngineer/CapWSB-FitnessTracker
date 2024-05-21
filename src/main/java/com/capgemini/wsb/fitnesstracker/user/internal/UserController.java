@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,6 +55,22 @@ class UserController {
     public User patchUser(@PathVariable Long id, @RequestBody UserDto userDto) {
         userService.getUser(id).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND));
         return userService.patchUser(userMapper.toEntity(userDto, id));
+    }
+
+    @PostMapping("find/by-mail")
+    public User findUserByMail(@RequestBody MailDto mail) {
+        return userService.findUserByEmail(mail.email()).orElseThrow(
+                ()->new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+    }
+
+    @PostMapping("find/by-age")
+    public Collection<User> findUserByMail(@RequestBody AgeDto mail) {
+        Collection<User> foundUsers = userService.findUserOlderThan(mail.age());
+        if(foundUsers.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        else
+            return foundUsers;
     }
 
 }

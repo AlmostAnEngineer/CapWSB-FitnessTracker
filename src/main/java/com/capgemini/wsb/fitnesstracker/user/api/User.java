@@ -3,6 +3,7 @@ package com.capgemini.wsb.fitnesstracker.user.api;
 import com.capgemini.wsb.fitnesstracker.training.api.Training;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -77,6 +78,11 @@ public class User {
     @Nullable
     public Long getId() {
         return id;
+    }
+
+    public Integer getAge()
+    {
+        return LocalDate.now().getYear() - birthdate.getYear();
     }
 
 }

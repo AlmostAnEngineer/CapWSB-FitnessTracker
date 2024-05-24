@@ -3,6 +3,7 @@ package com.capgemini.wsb.fitnesstracker.user.internal;
 import com.capgemini.wsb.fitnesstracker.user.api.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -19,16 +20,24 @@ class UserController {
 
     private final UserMapper userMapper;
 
-    @GetMapping
-    public List<UserSimpleDto> getAllUsers() {
+    @GetMapping("/simple")
+    public List<UserSimpleDto> getAllUsersSimple() {
         return userService.findAllUsers()
                           .stream()
                           .map(userMapper::toSimpleDto)
                           .toList();
     }
 
+    @GetMapping
+    public List<UserDto> getAllUsers() {
+        return userService.findAllUsers()
+                .stream()
+                .map(userMapper::toDto)
+                .toList();
+    }
+
     @GetMapping("/{id}")
-    public Optional<UserDto> getAllUsers(@PathVariable Long id) {
+    public Optional<UserDto> getAllUsersSimple(@PathVariable Long id) {
         Optional<User> user = Optional.ofNullable(userService.findUserById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND)));
         return user.map(userMapper::toDto);
@@ -46,9 +55,10 @@ class UserController {
     }
 
     @PostMapping
-    public User addUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<User> addUser(@RequestBody UserDto userDto) {
         System.out.println("User with e-mail: " + userDto.email() + "passed to the request");
-        return userService.createUser(userMapper.toEntity(userDto));
+        User user = userService.createUser(userMapper.toEntity(userDto));
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @PostMapping("/{id}")

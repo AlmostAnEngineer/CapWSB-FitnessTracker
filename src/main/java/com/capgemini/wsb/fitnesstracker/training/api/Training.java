@@ -55,4 +55,21 @@ public class Training {
         this.averageSpeed = averageSpeed;
     }
 
+    public Training(
+            Long id,
+            final User user,
+            final Date startTime,
+            final Date endTime,
+            final ActivityType activityType,
+            final double distance,
+            final double averageSpeed) {
+        this.id = id;
+        this.user = user;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.activityType = activityType;
+        this.distance = distance;
+        this.averageSpeed = averageSpeed;
+    }
+
 }

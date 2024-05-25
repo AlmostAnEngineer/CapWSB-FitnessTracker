@@ -5,7 +5,7 @@ import com.capgemini.wsb.fitnesstracker.user.api.UserNotFoundException;
 import org.springframework.stereotype.Component;
 
 @Component
-class UserMapper {
+public class UserMapper {
 
     private final UserRepository userRepository;
 

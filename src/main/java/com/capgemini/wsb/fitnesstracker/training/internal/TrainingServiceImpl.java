@@ -1,5 +1,6 @@
 package com.capgemini.wsb.fitnesstracker.training.internal;
 
+import com.capgemini.wsb.fitnesstracker.training.api.Training;
 import com.capgemini.wsb.fitnesstracker.training.api.TrainingProvider;
 import com.capgemini.wsb.fitnesstracker.training.api.TrainingService;
 import com.capgemini.wsb.fitnesstracker.user.api.User;
@@ -18,6 +19,16 @@ public class TrainingServiceImpl implements TrainingProvider, TrainingService {
     @Override
     public Optional<User> getAllTrainings(final Long trainingId) {
         throw new UnsupportedOperationException("Not finished yet");
+    }
+
+    @Override
+    public Training createTraining(Training training)
+    {
+        log.info("Creating training {}", training);
+        if (training.getId() != null) {
+            throw new IllegalArgumentException("Training id is already set");
+        }
+        return trainingRepository.save(training);
     }
 
 }

@@ -16,3 +16,13 @@ record TrainingDto(
         double distance,
         double averageSpeed
 ){}
+
+record TrainingDtoWithUserId(
+        @Nullable Long id,
+        Long userId,
+        Date startTime,
+        Date endTime,
+        ActivityType activityType,
+        double distance,
+        double averageSpeed
+){}

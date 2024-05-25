@@ -1,10 +1,17 @@
 package com.capgemini.wsb.fitnesstracker.training.internal;
 
 import com.capgemini.wsb.fitnesstracker.training.api.Training;
+import com.capgemini.wsb.fitnesstracker.user.api.User;
+import com.capgemini.wsb.fitnesstracker.user.api.UserService;
+import com.capgemini.wsb.fitnesstracker.user.internal.UserMapper;
+import com.capgemini.wsb.fitnesstracker.user.internal.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/trainings")
@@ -12,6 +19,11 @@ import java.util.List;
 public class TrainingController {
     private final TrainingServiceImpl trainingService;
     private final TrainingRepository trainingRepository;
+    private final TrainingMapper trainingMapper;
+
+    private final UserService userService;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @GetMapping
     public List<Training> getAllTrainings() {
@@ -23,11 +35,17 @@ public class TrainingController {
     }
 
     @PostMapping
-    public List<Training> addNewTraining(@RequestBody Training training) {
-        List<Training> allTrainings = trainingRepository.findAll();
-        if(allTrainings.isEmpty()) {
-            throw new RuntimeException("No trainings found");
+    public ResponseEntity<Training> addNewTraining(@RequestBody TrainingDtoWithUserId training) {
+        if(training.userId() == null)
+        {
+            throw new RuntimeException("Training user id is null");
         }
-        return allTrainings;
+        Optional<User> user = userRepository.findById(training.userId());
+        if(user.isPresent()) {
+            System.out.println("adding training:" + training);
+            Training newTraining = trainingService.createTraining(trainingMapper.toEntity(training, user.get()));
+            return new ResponseEntity<>(newTraining, HttpStatus.CREATED);
+        }
+        throw new RuntimeException("User not found");
     }
 }

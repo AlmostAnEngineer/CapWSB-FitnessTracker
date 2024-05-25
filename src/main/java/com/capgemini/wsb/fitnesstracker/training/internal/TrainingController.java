@@ -6,10 +6,13 @@ import com.capgemini.wsb.fitnesstracker.user.api.UserService;
 import com.capgemini.wsb.fitnesstracker.user.internal.UserMapper;
 import com.capgemini.wsb.fitnesstracker.user.internal.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,5 +50,10 @@ public class TrainingController {
             return new ResponseEntity<>(newTraining, HttpStatus.CREATED);
         }
         throw new RuntimeException("User not found");
+    }
+
+    @GetMapping("/finished/{afterTime}")
+    public List<Training> getFinishedTrainings(@PathVariable ("afterTime") @DateTimeFormat(pattern = "yyyy-MM-dd") Date time) {
+        return trainingRepository.getTrainingsFinishedAfter(time);
     }
 }

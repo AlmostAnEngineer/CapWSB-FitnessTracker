@@ -2,6 +2,8 @@ package com.capgemini.wsb.fitnesstracker.training.api;
 
 import com.capgemini.wsb.fitnesstracker.user.api.User;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 public interface TrainingProvider {
@@ -14,5 +16,5 @@ public interface TrainingProvider {
      * @return An {@link Optional} containing the located Training, or {@link Optional#empty()} if not found
      */
     Optional<User> getAllTrainings(Long trainingId);
-
+    List<Training> getTrainingsFinishedAfter(Date dateTime);
 }

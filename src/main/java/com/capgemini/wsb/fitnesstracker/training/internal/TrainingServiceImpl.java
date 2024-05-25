@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +29,12 @@ public class TrainingServiceImpl implements TrainingProvider, TrainingService {
             throw new IllegalArgumentException("Training id is already set");
         }
         return trainingRepository.save(training);
+    }
+
+    @Override
+    public List<Training> getTrainingsFinishedAfter(Date dateTime)
+    {
+        return trainingRepository.getTrainingsFinishedAfter(dateTime);
     }
 
 }

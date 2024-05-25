@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +35,7 @@ class UserServiceImpl implements UserService, UserProvider {
         actualUser.setFirstName(user.getFirstName());
         actualUser.setLastName(user.getLastName());
         actualUser.setEmail(user.getEmail());
+        actualUser.setBirthdate(user.getBirthdate());
         userRepository.save(actualUser);
         return user;
     }
@@ -71,8 +73,8 @@ class UserServiceImpl implements UserService, UserProvider {
     }
 
     @Override
-    public Collection<User> findUserOlderThan(Integer age) {
-        return userRepository.findOlderThan(age);
+    public Collection<User> findUserOlderThan(LocalDate day) {
+        return userRepository.findOlderThan(day);
     }
 
 }

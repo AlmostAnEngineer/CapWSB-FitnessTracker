@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -20,6 +21,7 @@ class UserController {
     private final UserServiceImpl userService;
 
     private final UserMapper userMapper;
+    private final UserRepository userRepository;
 
     @GetMapping("/simple")
     public List<UserSimpleDto> getAllUsersSimple() {
@@ -45,12 +47,12 @@ class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public Optional<UserDto> removeUser(@PathVariable Long id) {
+    public ResponseEntity<UserDto> removeUser(@PathVariable Long id) {
         Optional<User> user =  userService.findUserById(id);
         if(user.isPresent())
         {
             userService.removeUser(user.get());
-            return user.map(userMapper::toDto);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
@@ -62,14 +64,14 @@ class UserController {
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public User patchUser(@PathVariable Long id, @RequestBody UserDto userDto) {
         userService.getUser(id).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND));
         return userService.patchUser(userMapper.toEntity(userDto, id));
     }
 
     @GetMapping("/email")
-    public Collection<MailDto> findUsersByEMail(@RequestParam String email) {
+    public Collection<MailDto> findUsersOlderThan(@RequestParam String email) {
         Collection<User> users = userService.findUsersByEmail(email);
         Collection<MailDto> output = new ArrayList<>();
         for (User user : users) {
@@ -85,13 +87,12 @@ class UserController {
         }
     }
 
-    @PostMapping("find/by-age")
-    public Collection<User> findUsersByEMail(@RequestBody AgeDto mail) {
-        Collection<User> foundUsers = userService.findUserOlderThan(mail.age());
+    @GetMapping("/older/{time}")
+    public Collection<User> findUsersOlderThan(@PathVariable("time") LocalDate time) {
+        Collection<User> foundUsers = userService.findUserOlderThan(time);
         if(foundUsers.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         else
             return foundUsers;
     }
-
 }

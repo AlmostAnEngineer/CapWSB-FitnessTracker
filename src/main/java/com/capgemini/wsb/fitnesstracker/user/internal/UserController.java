@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -67,15 +68,25 @@ class UserController {
         return userService.patchUser(userMapper.toEntity(userDto, id));
     }
 
-    @PostMapping("find/by-mail")
-    public User findUserByMail(@RequestBody MailDto mail) {
-        return userService.findUserByEmail(mail.email()).orElseThrow(
-                ()->new ResponseStatusException(HttpStatus.NOT_FOUND));
-
+    @GetMapping("/email")
+    public Collection<MailDto> findUsersByEMail(@RequestParam String email) {
+        Collection<User> users = userService.findUsersByEmail(email);
+        Collection<MailDto> output = new ArrayList<>();
+        for (User user : users) {
+            output.add(userMapper.toMailDto(user));
+        }
+        if(output.isEmpty())
+        {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        else
+        {
+            return output;
+        }
     }
 
     @PostMapping("find/by-age")
-    public Collection<User> findUserByMail(@RequestBody AgeDto mail) {
+    public Collection<User> findUsersByEMail(@RequestBody AgeDto mail) {
         Collection<User> foundUsers = userService.findUserOlderThan(mail.age());
         if(foundUsers.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);

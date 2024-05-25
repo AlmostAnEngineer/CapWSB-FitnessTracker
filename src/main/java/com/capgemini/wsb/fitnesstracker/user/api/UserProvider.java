@@ -14,24 +14,9 @@ public interface UserProvider {
      * @return An {@link Optional} containing the located user, or {@link Optional#empty()} if not found
      */
     Optional<User> getUser(Long userId);
-
-    /**
-     * Retrieves a user based on their email.
-     * If the user with given email is not found, then {@link Optional#empty()} will be returned.
-     *
-     * @param email The email of the user to be searched
-     * @return An {@link Optional} containing the located user, or {@link Optional#empty()} if not found
-     */
-    Optional<User> getUserByEmail(String email);
-
-    /**
-     * Retrieves all users.
-     *
-     * @return An {@link Optional} containing the all users,
-     */
     List<User> findAllUsers();
     Optional<User> findUserById(Long userId);
-    Optional<User> findUserByEmail(String email);
+    Collection<User> findUsersByEmail(String email);
     Collection<User> findUserOlderThan(Integer age);
 
 }

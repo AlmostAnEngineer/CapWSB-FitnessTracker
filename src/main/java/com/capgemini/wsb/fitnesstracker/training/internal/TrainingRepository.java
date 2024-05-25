@@ -15,4 +15,11 @@ interface TrainingRepository extends JpaRepository<Training, Long> {
                 training -> Objects.compare(training.getEndTime(), date, Comparator.naturalOrder()) > 0
         ).collect(Collectors.toList());
     }
+
+    default List<Training> getTrainingsByType(ActivityType type)
+    {
+        return findAll().stream().filter(
+                training -> Objects.equals(training.getActivityType(), type)
+        ).collect(Collectors.toList());
+    }
 }

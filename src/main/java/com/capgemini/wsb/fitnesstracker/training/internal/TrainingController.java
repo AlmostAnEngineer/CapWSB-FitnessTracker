@@ -56,4 +56,10 @@ public class TrainingController {
     public List<Training> getFinishedTrainings(@PathVariable ("afterTime") @DateTimeFormat(pattern = "yyyy-MM-dd") Date time) {
         return trainingRepository.getTrainingsFinishedAfter(time);
     }
+
+    @GetMapping("/activityType")
+    public List<Training> getTrainings(@RequestParam ("activityType") String activityType) {
+        ActivityType activity = ActivityType.valueOf(activityType);
+        return trainingRepository.getTrainingsByType(activity);
+    }
 }

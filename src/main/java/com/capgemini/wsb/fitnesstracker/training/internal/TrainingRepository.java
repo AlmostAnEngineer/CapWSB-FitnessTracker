@@ -22,4 +22,15 @@ interface TrainingRepository extends JpaRepository<Training, Long> {
                 training -> Objects.equals(training.getActivityType(), type)
         ).collect(Collectors.toList());
     }
+
+    default Training updateTraining(Training training)
+    {
+        return save(training);
+    }
+
+    default List<Training> getTrainingsByUser(User user) {
+        return findAll().stream()
+                .filter(training -> Objects.equals(training.getUser(), user))
+                .collect(Collectors.toList());
+    }
 }

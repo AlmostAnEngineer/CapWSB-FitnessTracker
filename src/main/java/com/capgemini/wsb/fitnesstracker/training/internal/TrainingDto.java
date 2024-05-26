@@ -26,3 +26,5 @@ record TrainingDtoWithUserId(
         double distance,
         double averageSpeed
 ){}
+
+

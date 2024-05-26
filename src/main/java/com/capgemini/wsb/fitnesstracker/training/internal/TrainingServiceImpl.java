@@ -37,4 +37,10 @@ public class TrainingServiceImpl implements TrainingProvider, TrainingService {
         return trainingRepository.getTrainingsFinishedAfter(dateTime);
     }
 
+    @Override
+    public Optional<Training>  getTrainingById(Long trainingId)
+    {
+        return trainingRepository.findById(trainingId);
+    }
+
 }

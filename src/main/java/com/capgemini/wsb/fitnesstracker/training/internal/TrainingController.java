@@ -5,6 +5,7 @@ import com.capgemini.wsb.fitnesstracker.user.api.User;
 import com.capgemini.wsb.fitnesstracker.user.api.UserService;
 import com.capgemini.wsb.fitnesstracker.user.internal.UserMapper;
 import com.capgemini.wsb.fitnesstracker.user.internal.UserRepository;
+import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -61,5 +62,25 @@ public class TrainingController {
     public List<Training> getTrainings(@RequestParam ("activityType") String activityType) {
         ActivityType activity = ActivityType.valueOf(activityType);
         return trainingRepository.getTrainingsByType(activity);
+    }
+
+    @PutMapping("/{trainingId}")
+    public HttpStatus updateTraining(@PathVariable("trainingId") Long id, @RequestBody TrainingDtoWithUserId training) {
+        Optional<Training> actTraining = trainingService.getTrainingById(id);
+        if(actTraining.isPresent()) {
+            Training newTraining = trainingMapper.toEntity(training, actTraining.get().getUser());
+            trainingRepository.updateTraining(newTraining);
+            return HttpStatus.OK;
+        }
+        return HttpStatus.NOT_FOUND;
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<Training>> getTrainingsById(@PathVariable("userId") Long userId) {
+        Optional<User> user = userRepository.findById(userId);
+        if(user.isPresent()) {
+            return new ResponseEntity<>(trainingRepository.getTrainingsByUser(user.get()), HttpStatus.OK);
+        }
+        throw new RuntimeException("User not found");
     }
 }

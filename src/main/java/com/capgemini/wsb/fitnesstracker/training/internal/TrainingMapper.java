@@ -30,4 +30,34 @@ public class TrainingMapper {
                 training.getAverageSpeed()
         );
     }
+
+    Training toEntity(TrainingDto trainingDto){
+        if(trainingDto.id() == null) {
+            return new Training(trainingDto.user(), trainingDto.startTime(),
+                    trainingDto.endTime(), trainingDto.activityType(),
+                    trainingDto.distance(), trainingDto.averageSpeed()
+            );
+        }
+        else
+        {
+            return new Training(trainingDto.id(), trainingDto.user(), trainingDto.startTime(),
+                    trainingDto.endTime(), trainingDto.activityType(),
+                    trainingDto.distance(), trainingDto.averageSpeed()
+            );
+        }
+    }
+
+    Training toEntity(TrainingDto trainingDto, Long id){
+            return new Training(id, trainingDto.user(), trainingDto.startTime(),
+                    trainingDto.endTime(), trainingDto.activityType(),
+                    trainingDto.distance(), trainingDto.averageSpeed()
+            );
+    }
+
+    Training toEntity(TrainingDto trainingDto, Long id, User user){
+        return new Training(id, user, trainingDto.startTime(),
+                trainingDto.endTime(), trainingDto.activityType(),
+                trainingDto.distance(), trainingDto.averageSpeed()
+        );
+    }
 }

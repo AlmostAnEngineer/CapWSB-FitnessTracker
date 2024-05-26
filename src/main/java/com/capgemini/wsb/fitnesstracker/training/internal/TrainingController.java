@@ -65,14 +65,15 @@ public class TrainingController {
     }
 
     @PutMapping("/{trainingId}")
-    public HttpStatus updateTraining(@PathVariable("trainingId") Long id, @RequestBody TrainingDtoWithUserId training) {
+    public ResponseEntity<Training> updateTraining(@PathVariable("trainingId") Long id, @RequestBody TrainingDto training) {
         Optional<Training> actTraining = trainingService.getTrainingById(id);
-        if(actTraining.isPresent()) {
-            Training newTraining = trainingMapper.toEntity(training, actTraining.get().getUser());
+        if (actTraining.isPresent()) {
+            User actualUser = actTraining.get().getUser();
+            Training newTraining = trainingMapper.toEntity(training, id, actualUser);
             trainingRepository.updateTraining(newTraining);
-            return HttpStatus.OK;
+            return new ResponseEntity<>(newTraining, HttpStatus.OK);
         }
-        return HttpStatus.NOT_FOUND;
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/{userId}")

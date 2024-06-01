@@ -1,4 +1,4 @@
-package com.capgemini.wsb.fitnesstracker;
+package com.capgemini.wsb.fitnesstracker.aspect;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

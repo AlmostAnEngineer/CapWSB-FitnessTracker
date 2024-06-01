@@ -1,16 +1,10 @@
 package com.capgemini.wsb.fitnesstracker.statistics.internal;
 import com.capgemini.wsb.fitnesstracker.statistics.api.Statistics;
 import com.capgemini.wsb.fitnesstracker.user.api.User;
+import org.springframework.stereotype.Component;
 
+@Component
 public class StatisticsMapper {
-    Statistics toEntity(StatisticsDto statistics, Long id)
-    {
-        return new Statistics(id,
-                statistics.user(),
-                statistics.totalTrainings(),
-                statistics.totalDistance(),
-                statistics.totalCaloriesBurned());
-    }
 
     Statistics toEntity(StatisticsDto statistics, Long id, User user)
     {
@@ -21,20 +15,11 @@ public class StatisticsMapper {
                 statistics.totalCaloriesBurned());
     }
 
-    Statistics toEntity(StatisticsDto statistics)
-    {
-        return new Statistics(statistics.id(),
-                statistics.user(),
-                statistics.totalTrainings(),
-                statistics.totalDistance(),
-                statistics.totalCaloriesBurned());
-    }
-
-    StatisticsDto toDto(Statistics statistics)
+    static StatisticsDto toDto(Statistics statistics)
     {
         return new StatisticsDto(
                 statistics.getId(),
-                statistics.getUser(),
+                statistics.getUser().getId(),
                 statistics.getTotalTrainings(),
                 statistics.getTotalDistance(),
                 statistics.getTotalCaloriesBurned()

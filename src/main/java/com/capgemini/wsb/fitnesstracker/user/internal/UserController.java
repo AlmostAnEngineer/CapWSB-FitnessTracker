@@ -19,7 +19,6 @@ import java.util.Optional;
 class UserController {
 
     private final UserServiceImpl userService;
-
     private final UserMapper userMapper;
     private final UserRepository userRepository;
 

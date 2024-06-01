@@ -10,10 +10,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public interface StatisticsRepository extends JpaRepository<Statistics, Long> {
-    default List<Statistics> findAll() {
-        return findAll().stream().sorted(Comparator.comparingLong(Statistics::getId)).collect(Collectors.toList());
-    }
-
     default Optional<Statistics> findById(Long id) {
         return findById(id);
     }

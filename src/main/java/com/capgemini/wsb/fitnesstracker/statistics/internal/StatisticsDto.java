@@ -4,7 +4,7 @@ import jakarta.annotation.Nullable;
 
 record StatisticsDto(
         @Nullable Long id,
-        User user,
+        Long userid,
         int totalTrainings,
         double totalDistance,
         int totalCaloriesBurned

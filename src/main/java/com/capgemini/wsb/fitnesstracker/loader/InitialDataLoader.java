@@ -1,8 +1,11 @@
 package com.capgemini.wsb.fitnesstracker.loader;
 
+import com.capgemini.wsb.fitnesstracker.statistics.api.Statistics;
+import com.capgemini.wsb.fitnesstracker.statistics.internal.StatisticsRepository;
 import com.capgemini.wsb.fitnesstracker.training.api.Training;
 import com.capgemini.wsb.fitnesstracker.training.internal.ActivityType;
 import com.capgemini.wsb.fitnesstracker.user.api.User;
+import io.micrometer.core.instrument.Statistic;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static java.time.LocalDate.now;
 import static java.util.Objects.isNull;
@@ -37,6 +41,11 @@ class InitialDataLoader {
     @Autowired
     private JpaRepository<Training, Long> trainingRepository;
 
+    @Autowired
+    private JpaRepository<Statistics, Long> statisticRepository;
+    @Autowired
+    private StatisticsRepository statisticsRepository;
+
     @EventListener
     @Transactional
     @SuppressWarnings({"squid:S1854", "squid:S1481", "squid:S1192", "unused"})
@@ -47,9 +56,27 @@ class InitialDataLoader {
 
         List<User> sampleUserList = generateSampleUsers();
         List<Training> sampleTrainingList = generateTrainingData(sampleUserList);
-
+        List<Statistics> sampleStatisticsList = generateStatistics(sampleUserList);
 
         log.info("Finished loading initial data");
+    }
+
+    private Statistics generateStatistics(User user) {
+        double randomDouble = ThreadLocalRandom.current().nextDouble(0, 1000000);
+        int amountOfTrainings = ThreadLocalRandom.current().nextInt(0, 1000000);
+        int burnedCalories = ThreadLocalRandom.current().nextInt(0, 3000000);
+        return new Statistics(user, amountOfTrainings, randomDouble, burnedCalories);
+    }
+
+    private List<Statistics> generateStatistics(List<User> users)
+    {
+        List<Statistics> statisticsList = new ArrayList<>();
+        for (User user : users) {
+            Statistics generatedStatistics = generateStatistics(user);
+            statisticsList.add(generatedStatistics);
+            statisticsRepository.save(generatedStatistics);
+        }
+        return statisticsList;
     }
 
     private User generateUser(String name, String lastName, int age) {
@@ -162,6 +189,8 @@ class InitialDataLoader {
 
         return trainingData;
     }
+
+
     private void verifyDependenciesAutowired() {
         if (isNull(userRepository)) {
             throw new IllegalStateException("Initial data loader was not autowired correctly " + this);

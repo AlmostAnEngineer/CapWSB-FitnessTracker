@@ -6,6 +6,9 @@ import com.capgemini.wsb.fitnesstracker.user.internal.UserMapper;
 import org.apache.catalina.mbeans.UserMBean;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
+import java.util.Objects;
+
 @Component
 public class TrainingMapper {
     Training toEntity(TrainingDtoWithUserId trainingDto, User user){
@@ -59,5 +62,29 @@ public class TrainingMapper {
                 trainingDto.endTime(), trainingDto.activityType(),
                 trainingDto.distance(), trainingDto.averageSpeed()
         );
+    }
+
+    public Training toEntity(Long id, TrainingDtoForPut newTraining, Training trainingDto, User user) {
+        Date startTime = (newTraining.startTime() != null && !Objects.equals(trainingDto.getStartTime(), newTraining.startTime()))
+                ? newTraining.startTime()
+                : trainingDto.getStartTime();
+
+        Date endTime = (newTraining.endTime() != null && !Objects.equals(trainingDto.getEndTime(), newTraining.endTime()))
+                ? newTraining.endTime()
+                : trainingDto.getEndTime();
+
+        ActivityType activityType = (newTraining.activityType() != null && !Objects.equals(trainingDto.getActivityType(), newTraining.activityType()))
+                ? newTraining.activityType()
+                : trainingDto.getActivityType();
+
+        Double distance = (newTraining.distance() != null && !Objects.equals(trainingDto.getDistance(), newTraining.distance()))
+                ? newTraining.distance()
+                : trainingDto.getDistance();
+
+        Double avgSpeed = (newTraining.averageSpeed() != null && !Objects.equals(trainingDto.getAverageSpeed(), newTraining.averageSpeed()))
+                ? newTraining.averageSpeed()
+                : trainingDto.getAverageSpeed();
+
+        return new Training(id, user, startTime, endTime, activityType, distance, avgSpeed);
     }
 }

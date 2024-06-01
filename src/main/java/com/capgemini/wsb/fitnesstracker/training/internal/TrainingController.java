@@ -65,11 +65,11 @@ public class TrainingController {
     }
 
     @PutMapping("/{trainingId}")
-    public ResponseEntity<Training> updateTraining(@PathVariable("trainingId") Long id, @RequestBody TrainingDto training) {
+    public ResponseEntity<Training> updateTraining(@PathVariable("trainingId") Long id, @RequestBody TrainingDtoForPut training) {
         Optional<Training> actTraining = trainingService.getTrainingById(id);
         if (actTraining.isPresent()) {
             User actualUser = actTraining.get().getUser();
-            Training newTraining = trainingMapper.toEntity(training, id, actualUser);
+            Training newTraining = trainingMapper.toEntity(id, training, actTraining.get(), actualUser);
             trainingRepository.updateTraining(newTraining);
             return new ResponseEntity<>(newTraining, HttpStatus.OK);
         }

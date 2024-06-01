@@ -27,4 +27,14 @@ record TrainingDtoWithUserId(
         double averageSpeed
 ){}
 
+record TrainingDtoForPut(
+        @Nullable Long id,
+        @Nullable Long userId,
+        @Nullable Date startTime,
+        @Nullable Date endTime,
+        @Nullable ActivityType activityType,
+        @Nullable Double distance,
+        @Nullable Double averageSpeed
+){}
+
 

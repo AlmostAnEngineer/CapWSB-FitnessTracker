@@ -5,6 +5,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Method;
 import java.security.Timestamp;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -18,11 +19,18 @@ public class LoggingAspect {
         String className = joinPoint.getTarget().getClass().getName();
         Object[] args = joinPoint.getArgs();
 
+        Method method = ((org.aspectj.lang.reflect.MethodSignature) joinPoint.getSignature()).getMethod();
+
+        Class<?> returnType = method.getReturnType();
+        String returnTypeMessage = returnType.getSimpleName().equals("void") ? "void" : returnType.getSimpleName();
+
         LocalDateTime beforeExecution = LocalDateTime.now();
         StringBuilder logMessage = new StringBuilder();
         logMessage
                 .append(beforeExecution)
                 .append(" EXECUTING ")
+                .append(returnTypeMessage)
+                .append(" ")
                 .append(className)
                 .append(".")
                 .append(methodName)
@@ -40,6 +48,8 @@ public class LoggingAspect {
         logMessageAfterExecution
                 .append(afterExecution)
                 .append(" FINISHED ")
+                .append(returnTypeMessage)
+                .append(" ")
                 .append(className)
                 .append(".")
                 .append(methodName)

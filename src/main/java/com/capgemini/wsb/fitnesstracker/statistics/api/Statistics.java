@@ -29,4 +29,25 @@ public class Statistics {
     @Column(name = "total_calories_burned")
     private int totalCaloriesBurned;
 
+    Statistics(User user,
+               int totalTrainings,
+               double totalDistance,
+               int totalCaloriesBurned) {
+        this.user = user;
+        this.totalTrainings = totalTrainings;
+        this.totalDistance = totalDistance;
+        this.totalCaloriesBurned = totalCaloriesBurned;
+    }
+
+    Statistics(Long id,
+               User user,
+               int totalTrainings,
+               double totalDistance,
+               int caloriesBurned) {
+        this.id = id;
+        this.user = user;
+        this.totalTrainings = totalTrainings;
+        this.totalDistance = totalDistance;
+        this.totalCaloriesBurned = caloriesBurned;
+    }
 }

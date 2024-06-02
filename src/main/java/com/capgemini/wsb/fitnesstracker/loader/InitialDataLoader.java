@@ -43,8 +43,6 @@ class InitialDataLoader {
 
     @Autowired
     private JpaRepository<Statistics, Long> statisticRepository;
-    @Autowired
-    private StatisticsRepository statisticsRepository;
 
     @EventListener
     @Transactional
@@ -74,7 +72,7 @@ class InitialDataLoader {
         for (User user : users) {
             Statistics generatedStatistics = generateStatistics(user);
             statisticsList.add(generatedStatistics);
-            statisticsRepository.save(generatedStatistics);
+            statisticRepository.save(generatedStatistics);
         }
         return statisticsList;
     }
@@ -116,60 +114,70 @@ class InitialDataLoader {
                                               ActivityType.RUNNING,
                                               10.5,
                                               8.2);
+            trainingRepository.save(training1);
             Training training2 = new Training(users.get(1),
                                               sdf.parse("2024-01-18 15:30:00"),
                                               sdf.parse("2024-01-18 17:00:00"),
                                               ActivityType.CYCLING,
                                               25.0,
                                               18.5);
+            trainingRepository.save(training2);
             Training training3 = new Training(users.get(2),
                                               sdf.parse("2024-01-17 07:45:00"),
                                               sdf.parse("2024-01-17 09:00:00"),
                                               ActivityType.WALKING,
                                               5.2,
                                               5.8);
+            trainingRepository.save(training3);
             Training training4 = new Training(users.get(3),
                                               sdf.parse("2024-01-16 18:00:00"),
                                               sdf.parse("2024-01-16 19:30:00"),
                                               ActivityType.RUNNING,
                                               12.3,
                                               9.0);
+            trainingRepository.save(training4);
             Training training5 = new Training(users.get(4),
                                               sdf.parse("2024-01-15 12:30:00"),
                                               sdf.parse("2024-01-15 13:45:00"),
                                               ActivityType.CYCLING,
                                               18.7,
                                               15.3);
+            trainingRepository.save(training5);
             Training training6 = new Training(users.get(5),
                                               sdf.parse("2024-01-14 09:00:00"),
                                               sdf.parse("2024-01-14 10:15:00"),
                                               ActivityType.WALKING,
                                               3.5,
                                               4.0);
+            trainingRepository.save(training6);
             Training training7 = new Training(users.get(6),
                                               sdf.parse("2024-01-13 16:45:00"),
                                               sdf.parse("2024-01-13 18:30:00"),
                                               ActivityType.RUNNING,
                                               15.0,
                                               10.8);
+            trainingRepository.save(training7);
             Training training8 = new Training(users.get(7),
                                               sdf.parse("2024-01-12 11:30:00"),
                                               sdf.parse("2024-01-12 12:45:00"),
                                               ActivityType.CYCLING,
                                               22.5,
                                               17.2);
+            trainingRepository.save(training8);
             Training training9 = new Training(users.get(8),
                                               sdf.parse("2024-01-11 07:15:00"),
                                               sdf.parse("2024-01-11 08:30:00"),
                                               ActivityType.WALKING,
                                               4.2,
                                               4.5);
+            trainingRepository.save(training9);
             Training training10 = new Training(users.get(9),
                                                sdf.parse("2024-01-10 14:00:00"),
                                                sdf.parse("2024-01-10 15:15:00"),
                                                ActivityType.RUNNING,
                                                11.8,
                                                8.5);
+            trainingRepository.save(training10);
 
             trainingData.add(training1);
             trainingData.add(training2);
@@ -181,8 +189,6 @@ class InitialDataLoader {
             trainingData.add(training8);
             trainingData.add(training9);
             trainingData.add(training10);
-
-            trainingData.forEach(training -> trainingRepository.save(training));
         } catch (ParseException e) {
             e.printStackTrace();
         }

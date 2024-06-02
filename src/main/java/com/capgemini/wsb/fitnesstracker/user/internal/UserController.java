@@ -34,15 +34,15 @@ class UserController {
     public List<UserDto> getAllUsers() {
         return userService.findAllUsers()
                 .stream()
-                .map(userMapper::toDto)
+                .map(UserMapper::toDto)
                 .toList();
     }
 
     @GetMapping("/{id}")
     public Optional<UserDto> getAllUsersSimple(@PathVariable Long id) {
         Optional<User> user = Optional.ofNullable(userService.findUserById(id).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND)));
-        return user.map(userMapper::toDto);
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "USER NOT FOUND")));
+        return user.map(UserMapper::toDto);
     }
 
     @DeleteMapping("/{id}")

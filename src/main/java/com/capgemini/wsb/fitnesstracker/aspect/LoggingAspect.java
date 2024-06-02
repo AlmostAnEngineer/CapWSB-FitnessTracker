@@ -35,9 +35,17 @@ public class LoggingAspect {
                 .append(methodName)
                 .append("(");
 
-        for (Object arg : args) {
-            logMessage.append(arg);
+        if (args != null) {
+            try {
+                for (Object arg : args) {
+                    if(arg != null) {
+                        logMessage.append(arg);
+                    }
+                }
+            } catch (StackOverflowError e) {
+            }
         }
+
         logMessage.append(")");
         System.out.println(logMessage);
         Object result = joinPoint.proceed(args);
@@ -54,8 +62,16 @@ public class LoggingAspect {
                 .append(methodName)
                 .append("(");
 
-        for (Object arg : args) {
-            logMessageAfterExecution.append(arg);
+        if (args != null) {
+            try {
+                for (Object arg : args) {
+                    if(arg != null) {
+                        logMessageAfterExecution.append(arg);
+                    }
+                }
+            } catch (StackOverflowError e) {
+                System.out.println("Stack Overflow in arguments, recurrent args");
+            }
         }
 
         logMessageAfterExecution.append(")");

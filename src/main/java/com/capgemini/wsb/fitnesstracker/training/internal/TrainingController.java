@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -30,12 +31,16 @@ public class TrainingController {
     private final UserMapper userMapper;
 
     @GetMapping
-    public List<Training> getAllTrainings() {
+    public ResponseEntity<List<TrainingDtoWithUserDto>> getAllTrainings() {
         List<Training> allTrainings = trainingRepository.findAll();
-        if(allTrainings.isEmpty()) {
-            throw new RuntimeException("No trainings found");
+        List<TrainingDtoWithUserDto> userDtos = new ArrayList<>();
+        if (!allTrainings.isEmpty()) {
+            for (Training training : allTrainings) {
+                userDtos.add(trainingMapper.toDtoWithUserDto(training));
+            }
+            return new ResponseEntity<>(userDtos, HttpStatus.OK);
         }
-        return allTrainings;
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping

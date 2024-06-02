@@ -50,6 +50,14 @@ public class TrainingMapper {
         }
     }
 
+    TrainingDtoWithUserDto toDtoWithUserDto(Training training){
+        return new TrainingDtoWithUserDto(
+                training.getId(), UserMapper.toDto(training.getUser()), training.getStartTime(),
+                training.getEndTime(), training.getActivityType(),
+                training.getDistance(), training.getAverageSpeed()
+        );
+    }
+
     Training toEntity(TrainingDto trainingDto, Long id){
             return new Training(id, trainingDto.user(), trainingDto.startTime(),
                     trainingDto.endTime(), trainingDto.activityType(),

@@ -16,6 +16,7 @@ import java.util.Optional;
 @Slf4j
 public class StatisticsServiceImpl implements StatisticsService, StatisticsProvider {
     private final StatisticsRepository statisticsRepository;
+
     @Override
     public Optional<Statistics> getStatistics(Long statisticsId) {
         return statisticsRepository.findById(statisticsId);
@@ -24,13 +25,12 @@ public class StatisticsServiceImpl implements StatisticsService, StatisticsProvi
     @Override
     public List<Statistics> getAllStatistics()
     {
-        List<Statistics> statisticsList = statisticsRepository.findAll()
-                                                                ;
-        if(statisticsList.isEmpty())
-        {
-            return new ArrayList<>();}
-        else{
-            return statisticsList;
-        }
+        return statisticsRepository.findAll();
+    }
+
+    @Override
+    public Statistics createStatistics(Statistics statistics) {
+        statistics.setId(null);
+        return statisticsRepository.save(statistics);
     }
 }

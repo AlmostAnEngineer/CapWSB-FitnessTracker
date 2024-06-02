@@ -10,7 +10,4 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public interface StatisticsRepository extends JpaRepository<Statistics, Long> {
-    default Optional<Statistics> findById(Long id) {
-        return findById(id);
-    }
 }

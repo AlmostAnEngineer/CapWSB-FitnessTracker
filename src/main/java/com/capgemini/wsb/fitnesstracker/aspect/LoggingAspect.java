@@ -6,13 +6,14 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Method;
+import java.rmi.server.UID;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Aspect
 @Service
 public class LoggingAspect {
-    @Around("within(com.capgemini.wsb.fitnesstracker.*.internal.*ServiceImpl+)\")")
+    @Around("within(com.capgemini.wsb.fitnesstracker.*.internal.*)\")")
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
         String methodName = joinPoint.getSignature().getName();
         String className = joinPoint.getTarget().getClass().getName();
@@ -43,10 +44,13 @@ public class LoggingAspect {
                     }
                 }
             } catch (StackOverflowError e) {
+                System.out.println("Stack Overflow in arguments, recurrent args");
             }
         }
 
         logMessage.append(")");
+        UID uid = new UID();
+        logMessage.append(" ID: ").append(uid);
         System.out.println(logMessage);
         Object result = joinPoint.proceed(args);
 
@@ -78,6 +82,7 @@ public class LoggingAspect {
         logMessageAfterExecution.append(" completed in: ");
         Duration executionTime = Duration.between(beforeExecution, afterExecution);
         logMessageAfterExecution.append(executionTime);
+        logMessageAfterExecution.append(" ID: ").append(uid);
         System.out.println(logMessageAfterExecution);
 
         return result;

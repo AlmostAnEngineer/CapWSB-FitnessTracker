@@ -39,10 +39,10 @@ class UserController {
     }
 
     @GetMapping("/{id}")
-    public Optional<UserDto> getAllUsersSimple(@PathVariable Long id) {
-        Optional<User> user = Optional.ofNullable(userService.findUserById(id).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "USER NOT FOUND")));
-        return user.map(UserMapper::toDto);
+    public ResponseEntity<UserDto> getAllUsersSimple(@PathVariable Long id) {
+        Optional<User> user = userRepository.findById(id);
+        return user.map(value -> new ResponseEntity<>(UserMapper.toDto(value), HttpStatus.OK)).orElseGet(
+                () -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @DeleteMapping("/{id}")
@@ -57,16 +57,19 @@ class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> addUser(@RequestBody UserDto userDto) {
-        System.out.println("User with e-mail: " + userDto.email() + "passed to the request");
+    public ResponseEntity<UserDto> addUser(@RequestBody UserDto userDto) {
         User user = userService.createUser(userMapper.toEntity(userDto));
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
+        return new ResponseEntity<>(UserMapper.toDto(user), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public User patchUser(@PathVariable Long id, @RequestBody UserDto userDto) {
-        userService.getUser(id).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND));
-        return userService.patchUser(userMapper.toEntity(userDto, id));
+    public ResponseEntity<UserDto> patchUser(@PathVariable Long id, @RequestBody UserDto userDto) {
+        Optional<User> actualUser = userService.getUser(id);
+        if(actualUser.isPresent()) {
+            User user = userService.patchUser(userMapper.toEntity(userDto, id));
+            return new ResponseEntity<>(UserMapper.toDto(user), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/email")
@@ -87,11 +90,13 @@ class UserController {
     }
 
     @GetMapping("/older/{time}")
-    public Collection<User> findUsersOlderThan(@PathVariable("time") LocalDate time) {
+    public ResponseEntity<Collection<UserDto>> findUsersOlderThan(@PathVariable("time") LocalDate time) {
         Collection<User> foundUsers = userService.findUserOlderThan(time);
-        if(foundUsers.isEmpty())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        else
-            return foundUsers;
+        if(foundUsers.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            List<UserDto> output = foundUsers.stream().map(UserMapper::toDto).toList();
+            return new ResponseEntity<>(output, HttpStatus.OK);
+        }
     }
 }

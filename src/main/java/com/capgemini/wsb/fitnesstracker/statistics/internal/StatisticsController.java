@@ -82,4 +82,15 @@ public class StatisticsController {
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
+    @DeleteMapping("/{userid}")
+    public ResponseEntity<StatisticsDto> deleteStatistics(@PathVariable("userid") Long userid) {
+        Optional<Statistics> statistics = statisticsService.getStatisticsForUser(userid);
+        if(statistics.isPresent()) {
+            Statistics statistic = statistics.get();
+            statisticsRepository.delete(statistic);
+            return new ResponseEntity<>(StatisticsMapper.toDto(statistic), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 }

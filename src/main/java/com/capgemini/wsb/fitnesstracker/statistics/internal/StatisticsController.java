@@ -39,17 +39,6 @@ public class StatisticsController {
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<StatisticsDto> getStatisticsEndpoint(@PathVariable("id") Long id) {
-        Optional<Statistics> statistics = statisticsService.getStatistics(id);
-        if(statistics.isPresent()) {
-            Statistics statistic = statistics.get();
-            StatisticsDto statisticDto = StatisticsMapper.toDto(statistic);
-            return new ResponseEntity<>(statisticDto, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-
     @PostMapping
     public ResponseEntity<StatisticsDto> createStatistics(@RequestBody StatisticsDto statisticsDto) {
         Optional<User> user = userRepository.findById(statisticsDto.userid());
@@ -63,6 +52,33 @@ public class StatisticsController {
             Statistics statistics = statisticsMapper.toEntity(statisticsDto, null, user.get());
             Statistics created = statisticsService.createStatistics(statistics);
             return new ResponseEntity<>(StatisticsMapper.toDto(created), HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @PutMapping
+    public ResponseEntity<StatisticsDto> updateStatistics(@RequestBody StatisticsDto statisticsDto) {
+        if(statisticsDto.id() == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Optional<Statistics> actualStatistics = statisticsService.getStatistics(statisticsDto.id());
+        if(actualStatistics.isPresent()) {
+            Statistics newStatistics = StatisticsMapper.toEntity(statisticsDto,
+                    actualStatistics.get().getId(),
+                    actualStatistics.get().getUser());
+            statisticsRepository.save(newStatistics);
+            return new ResponseEntity<>(StatisticsMapper.toDto(newStatistics), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/{userid}")
+    public ResponseEntity<StatisticsDto> getStatistics(@PathVariable("userid") Long userid) {
+        Optional<Statistics> statistics = statisticsService.getStatisticsForUser(userid);
+        if(statistics.isPresent()) {
+            Statistics statistic = statistics.get();
+            StatisticsDto statisticDto = StatisticsMapper.toDto(statistic);
+            return new ResponseEntity<>(statisticDto, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

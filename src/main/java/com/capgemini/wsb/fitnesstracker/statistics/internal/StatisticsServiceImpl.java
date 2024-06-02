@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -32,5 +33,14 @@ public class StatisticsServiceImpl implements StatisticsService, StatisticsProvi
     public Statistics createStatistics(Statistics statistics) {
         statistics.setId(null);
         return statisticsRepository.save(statistics);
+    }
+
+    @Override
+    public Optional<Statistics> getStatisticsForUser(Long userId)
+    {
+        return statisticsRepository.findAll()
+                .stream()
+                .filter(statistic -> Objects.equals(statistic.getUser().getId(), userId))
+                .findFirst();
     }
 }

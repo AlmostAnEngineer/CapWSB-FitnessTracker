@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class StatisticsMapper {
 
-    Statistics toEntity(StatisticsDto statistics, Long id, User user)
+    static Statistics toEntity(StatisticsDto statistics, Long id, User user)
     {
         return new Statistics(id,
                 user,
@@ -27,8 +27,7 @@ public class StatisticsMapper {
         );
     }
 
-    static StatisticsDtWithUserDto toDtowithUserDto(Statistics statistics, User user)
-    {
+    static StatisticsDtWithUserDto toDtowithUserDto(Statistics statistics, User user) {
         return new StatisticsDtWithUserDto(statistics.getId(),
                 UserMapper.toDto(user),
                 statistics.getTotalTrainings(),

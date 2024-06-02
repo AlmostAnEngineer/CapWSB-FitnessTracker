@@ -14,5 +14,6 @@ public interface StatisticsProvider {
      */
     Optional<Statistics> getStatistics(Long statisticsId);
     List<Statistics> getAllStatistics();
+    Optional<Statistics> getStatisticsForUser(Long userId);
 
 }

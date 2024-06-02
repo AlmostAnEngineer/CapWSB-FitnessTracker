@@ -44,49 +44,61 @@ public class TrainingController {
     }
 
     @PostMapping
-    public ResponseEntity<Training> addNewTraining(@RequestBody TrainingDtoWithUserId training) {
+    public ResponseEntity<TrainingDtoWithUserDto> addNewTraining(@RequestBody TrainingDtoWithUserId training) {
         if(training.userId() == null)
         {
-            throw new RuntimeException("Training user id is null");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         Optional<User> user = userRepository.findById(training.userId());
         if(user.isPresent()) {
             System.out.println("adding training:" + training);
             Training newTraining = trainingService.createTraining(trainingMapper.toEntity(training, user.get()));
-            return new ResponseEntity<>(newTraining, HttpStatus.CREATED);
+            return new ResponseEntity<>(trainingMapper.toDtoWithUserDto(newTraining), HttpStatus.CREATED);
         }
-        throw new RuntimeException("User not found");
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/finished/{afterTime}")
-    public List<Training> getFinishedTrainings(@PathVariable ("afterTime") @DateTimeFormat(pattern = "yyyy-MM-dd") Date time) {
-        return trainingRepository.getTrainingsFinishedAfter(time);
+    public ResponseEntity<List<TrainingDtoWithUserDto>> getFinishedTrainings(@PathVariable ("afterTime") @DateTimeFormat(pattern = "yyyy-MM-dd") Date time) {
+        List<TrainingDtoWithUserDto> trainings = trainingRepository.getTrainingsFinishedAfter(time).stream().map(TrainingMapper::toDtoWithUserDto).toList();
+        if(trainings.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(trainings, HttpStatus.OK);
     }
 
     @GetMapping("/activityType")
-    public List<Training> getTrainings(@RequestParam ("activityType") String activityType) {
+    public ResponseEntity<List<Training>> getTrainings(@RequestParam ("activityType") String activityType) {
         ActivityType activity = ActivityType.valueOf(activityType);
-        return trainingRepository.getTrainingsByType(activity);
+        if(activity == null)
+        {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(trainingRepository.getTrainingsByType(activity), HttpStatus.OK);
     }
 
     @PutMapping("/{trainingId}")
-    public ResponseEntity<Training> updateTraining(@PathVariable("trainingId") Long id, @RequestBody TrainingDtoForPut training) {
+    public ResponseEntity<TrainingDtoWithUserDto> updateTraining(@PathVariable("trainingId") Long id, @RequestBody TrainingDtoForPut training) {
         Optional<Training> actTraining = trainingService.getTrainingById(id);
         if (actTraining.isPresent()) {
             User actualUser = actTraining.get().getUser();
             Training newTraining = trainingMapper.toEntity(id, training, actTraining.get(), actualUser);
             trainingRepository.updateTraining(newTraining);
-            return new ResponseEntity<>(newTraining, HttpStatus.OK);
+            return new ResponseEntity<>(TrainingMapper.toDtoWithUserDto(newTraining), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<List<Training>> getTrainingsById(@PathVariable("userId") Long userId) {
+    public ResponseEntity<List<TrainingDtoWithUserDto>> getTrainingsById(@PathVariable("userId") Long userId) {
         Optional<User> user = userRepository.findById(userId);
         if(user.isPresent()) {
-            return new ResponseEntity<>(trainingRepository.getTrainingsByUser(user.get()), HttpStatus.OK);
+            User actualUser = user.get();
+            List<Training> trainings = trainingService.getTrainingsByUserId(actualUser.getId());
+            List<TrainingDtoWithUserDto> mappedTrainings = trainings.stream().map(TrainingMapper::toDtoWithUserDto).toList();
+            return new ResponseEntity<>(mappedTrainings, HttpStatus.OK);
         }
-        throw new RuntimeException("User not found");
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

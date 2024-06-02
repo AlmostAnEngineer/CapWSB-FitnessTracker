@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,4 +44,11 @@ public class TrainingServiceImpl implements TrainingProvider, TrainingService {
         return trainingRepository.findById(trainingId);
     }
 
+    @Override
+    public List<Training> getTrainingsByUserId(Long userId)
+    {
+        return trainingRepository.findAll().stream()
+                .filter(training -> training.getUser().getId().equals(userId))
+                .collect(Collectors.toList());
+    }
 }

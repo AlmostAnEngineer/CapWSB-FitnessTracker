@@ -50,7 +50,7 @@ public class TrainingMapper {
         }
     }
 
-    TrainingDtoWithUserDto toDtoWithUserDto(Training training){
+    static TrainingDtoWithUserDto toDtoWithUserDto(Training training){
         return new TrainingDtoWithUserDto(
                 training.getId(), UserMapper.toDto(training.getUser()), training.getStartTime(),
                 training.getEndTime(), training.getActivityType(),

@@ -3,10 +3,7 @@ package com.capgemini.wsb.fitnesstracker.training.api;
 import com.capgemini.wsb.fitnesstracker.training.internal.ActivityType;
 import com.capgemini.wsb.fitnesstracker.user.api.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.Date;
 @Entity
@@ -16,27 +13,41 @@ import java.util.Date;
 @ToString
 public class Training {
 
+    @Setter
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
+    @Getter
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Setter
+    @Getter
     @Column(name = "start_time", nullable = false)
     private Date startTime;
 
+    @Setter
+    @Getter
     @Column(name = "end_time", nullable = false)
     private Date endTime;
 
+    @Setter
+    @Getter
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "activity_type", nullable = false)
     private ActivityType activityType;
 
+    @Setter
+    @Getter
     @Column(name = "distance")
     private double distance;
 
+    @Setter
+    @Getter
     @Column(name = "average_speed")
     private double averageSpeed;
 

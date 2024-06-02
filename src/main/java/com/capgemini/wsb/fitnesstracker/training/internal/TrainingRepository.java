@@ -23,9 +23,15 @@ interface TrainingRepository extends JpaRepository<Training, Long> {
         ).collect(Collectors.toList());
     }
 
-    default Training updateTraining(Training training)
+    default Training updateTraining(Training newTraining, Training oldTraining)
     {
-        return save(training);
+        oldTraining.setDistance(newTraining.getDistance());
+        oldTraining.setEndTime(newTraining.getEndTime());
+        oldTraining.setStartTime(newTraining.getStartTime());
+        oldTraining.setActivityType(newTraining.getActivityType());
+        oldTraining.setUser(newTraining.getUser());
+        oldTraining.setAverageSpeed(newTraining.getAverageSpeed());
+        return save(oldTraining);
     }
 
     default List<Training> getTrainingsByUser(User user) {

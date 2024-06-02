@@ -82,10 +82,13 @@ public class TrainingController {
     public ResponseEntity<TrainingDtoWithUserDto> updateTraining(@PathVariable("trainingId") Long id, @RequestBody TrainingDtoForPut training) {
         Optional<Training> actTraining = trainingService.getTrainingById(id);
         if (actTraining.isPresent()) {
-            User actualUser = actTraining.get().getUser();
-            Training newTraining = trainingMapper.toEntity(id, training, actTraining.get(), actualUser);
-            trainingRepository.updateTraining(newTraining);
-            return new ResponseEntity<>(TrainingMapper.toDtoWithUserDto(newTraining), HttpStatus.OK);
+            Optional<User> user = userRepository.findById(training.userId());
+            if (user.isPresent()) {
+                Training newTraining = trainingMapper.toEntity(id, training, actTraining.get(), user.get());
+                trainingRepository.updateTraining(newTraining, actTraining.get());
+                return new ResponseEntity<>(TrainingMapper.toDtoWithUserDto(newTraining), HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

@@ -18,8 +18,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
      */
     default List<User> findByEmail(String email) {
         return findAll().stream()
-                        .filter(user -> Objects.equals(user.getEmail(), email))
-                        .toList();
+                        .filter(user -> user.getEmail().contains(email))
+                        .collect(Collectors.toList());
     }
 
     default Collection<User> findOlderThan(LocalDate day) {

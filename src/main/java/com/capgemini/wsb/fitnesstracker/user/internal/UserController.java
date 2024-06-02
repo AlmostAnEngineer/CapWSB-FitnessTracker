@@ -23,7 +23,7 @@ class UserController {
     private final UserRepository userRepository;
 
     @GetMapping("/simple")
-    public List<UserSimpleDto> getAllUsersSimple() {
+    public List<UserSimpleDto> getSimpleUsers() {
         return userService.findAllUsers()
                           .stream()
                           .map(userMapper::toSimpleDto)
@@ -39,7 +39,7 @@ class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getAllUsersSimple(@PathVariable Long id) {
+    public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
         Optional<User> user = userRepository.findById(id);
         return user.map(value -> new ResponseEntity<>(UserMapper.toDto(value), HttpStatus.OK)).orElseGet(
                 () -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -64,7 +64,7 @@ class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<UserDto> patchUser(@PathVariable Long id, @RequestBody UserDto userDto) {
-        Optional<User> actualUser = userService.getUser(id);
+        Optional<User> actualUser = userService.findUserById(id);
         if(actualUser.isPresent()) {
             User user = userService.patchUser(userMapper.toEntity(userDto, id));
             return new ResponseEntity<>(UserMapper.toDto(user), HttpStatus.OK);
@@ -73,7 +73,7 @@ class UserController {
     }
 
     @GetMapping("/email")
-    public Collection<MailDto> findUsersOlderThan(@RequestParam String email) {
+    public Collection<MailDto> findUsersByEmail(@RequestParam String email) {
         Collection<User> users = userService.findUsersByEmail(email);
         Collection<MailDto> output = new ArrayList<>();
         for (User user : users) {

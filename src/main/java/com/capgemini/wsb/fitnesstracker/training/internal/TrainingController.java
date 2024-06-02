@@ -68,14 +68,14 @@ public class TrainingController {
     }
 
     @GetMapping("/activityType")
-    public ResponseEntity<List<Training>> getTrainings(@RequestParam ("activityType") String activityType) {
+    public ResponseEntity<List<TrainingDtoWithUserDto>> getTrainingsByActivityType(@RequestParam ("activityType") String activityType) {
         ActivityType activity = ActivityType.valueOf(activityType);
-        if(activity == null)
-        {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        List<Training> trainings = trainingRepository.getTrainingsByType(activity);
+        List<TrainingDtoWithUserDto> trainingDtos = trainings.stream().map(TrainingMapper::toDtoWithUserDto).toList();
+        if(trainingDtos.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
-        return new ResponseEntity<>(trainingRepository.getTrainingsByType(activity), HttpStatus.OK);
+        return new ResponseEntity<>(trainingDtos, HttpStatus.OK);
     }
 
     @PutMapping("/{trainingId}")

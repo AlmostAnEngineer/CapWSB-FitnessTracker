@@ -2,6 +2,7 @@ package com.capgemini.wsb.fitnesstracker.user.internal;
 
 import com.capgemini.wsb.fitnesstracker.user.api.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -90,7 +91,7 @@ class UserController {
     }
 
     @GetMapping("/older/{time}")
-    public ResponseEntity<Collection<UserDto>> findUsersOlderThan(@PathVariable("time") LocalDate time) {
+    public ResponseEntity<Collection<UserDto>> findUsersOlderThan(@PathVariable("time") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate time) {
         Collection<User> foundUsers = userService.findUserOlderThan(time);
         if(foundUsers.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

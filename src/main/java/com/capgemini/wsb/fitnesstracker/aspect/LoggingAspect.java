@@ -44,7 +44,6 @@ public class LoggingAspect {
                     }
                 }
             } catch (StackOverflowError e) {
-                System.out.println("Stack Overflow in arguments, recurrent args");
             }
         }
 
@@ -74,7 +73,6 @@ public class LoggingAspect {
                     }
                 }
             } catch (StackOverflowError e) {
-                System.out.println("Stack Overflow in arguments, recurrent args");
             }
         }
 

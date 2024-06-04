@@ -14,7 +14,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @Service
@@ -27,14 +30,17 @@ public class NotificationService {
     private final UserProvider userProvider;
     private final String reportString="WEEKLY REPORT";
 
-    @Scheduled(cron = "15 36 14 ? * 2") //report scheduled for every sunday at 18:00:00
+    @Scheduled(cron = "15 48 14 ? * 2") //report scheduled for every sunday at 18:00:00
     public void generateReportAndSendMail() {
         System.out.println("Cron scheduling report generation");
         List<User> allUsers = userProvider.findAllUsers();
+        LocalDateTime now = LocalDateTime.now();
         for (User user : allUsers) {
             final EmailDto emailDto = emailProvider.sendMail(user.getEmail(),
                     reportString,
-                    trainingProvider.getTrainingsByUserId(user.getId()));
+                    trainingProvider.getTrainingsByUserId(user.getId()).stream().filter(
+                            training -> training.getStartTime().toInstant().isAfter(Instant.from(now))
+                    ).collect(Collectors.toList()));
             emailSender.send(emailDto);
             System.out.println("sending email");
         }

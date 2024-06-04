@@ -27,7 +27,7 @@ public class NotificationService {
     private final UserProvider userProvider;
     private final String reportString="WEEKLY REPORT";
 
-    @Scheduled(cron = "0 0 18 ? * 7") //report scheduled for every sunday at 18:00:00
+    @Scheduled(cron = "15 36 14 ? * 2") //report scheduled for every sunday at 18:00:00
     public void generateReportAndSendMail() {
         System.out.println("Cron scheduling report generation");
         List<User> allUsers = userProvider.findAllUsers();
